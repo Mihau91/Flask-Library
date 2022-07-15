@@ -30,3 +30,18 @@ def insert_del_sql(sql_code, database_name):
     else:
         cursor.close()  # close cursor and connection
         cnx.close()
+
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def main_page():
+    """
+    renders main page
+    """
+    return render_template("main.html")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
