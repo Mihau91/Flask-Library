@@ -11,24 +11,28 @@ def take_pass():
     return password
 
 
-def insert_del_sql(sql_code, database_name):
+def execute_sql(sql_code, db_name):
     """
     Run given sql code with psycopg2
 
     :param sql_code: sql code to run
-    :param database_name: database name
+    :param db_name: database name
     :return: data from psycopg2 cursor as a list
     """
     try:
-        cnx = connect(user='postgres', host='localhost', password=take_pass(),
-                      database=database_name)  # open connection to database
+        cnx = connect(user='postgres', password=take_pass(), host='localhost', database=db_name)
         cnx.autocommit = True
         cursor = cnx.cursor()
-        cursor.execute(sql_code)  # execute sql code
-    except OperationalError:
-        print("Something went wrong")
+        cursor.execute(sql_code)
+        if cursor.rowcount > 0:
+            results = []
+            for row in cursor:
+                results.append(row)  # add each row from database table to list
+            return results
+    except OperationalError as e:
+        print(f"Something went wrong - {e}")
     else:
-        cursor.close()  # close cursor and connection
+        cursor.close()
         cnx.close()
 
 
@@ -41,6 +45,16 @@ def main_page():
     renders main page
     """
     return render_template("main.html")
+
+
+@app.route('/books-list')
+def books_list():
+    """
+    renders template with list of books from database
+    """
+    sql_query = "SELECT * FROM book"
+    books = execute_sql(sql_query, 'library')
+    return render_template("books-list.html", books=books)  # render template with context
 
 
 if __name__ == "__main__":
