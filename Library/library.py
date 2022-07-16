@@ -11,7 +11,7 @@ def take_pass():
     return password
 
 
-def execute_sql(sql_code, db_name):
+def select_sql(sql_code, db_name):
     """
     Run given sql code with psycopg2
 
@@ -36,6 +36,19 @@ def execute_sql(sql_code, db_name):
         cnx.close()
 
 
+def insert_del_sql(sql_code, db_name):
+    try:
+        cnx = connect(user='postgres', password=take_pass(), host='localhost', database=db_name)
+        cnx.autocommit = True
+        cursor = cnx.cursor()
+        cursor.execute(sql_code)
+    except OperationalError as e:
+        print(f"Something went wrong - {e}")
+    else:
+        cursor.close()
+        cnx.close()
+
+
 app = Flask(__name__)
 
 
@@ -53,8 +66,28 @@ def books_list():
     renders template with list of books from database
     """
     sql_query = "SELECT * FROM book"
-    books = execute_sql(sql_query, 'library')
+    books = select_sql(sql_query, 'library')
     return render_template("books-list.html", books=books)  # render template with context
+
+
+@app.route('/add-book', methods=["GET", "POST"])
+def add_book():
+    """
+    renders form and add taken info from form to database
+    """
+    if request.method == "GET":
+        return render_template('add-book.html')
+    elif request.method == "POST":
+        title = request.form.get("title")  # takes values from inputs
+        description = request.form.get("desc")
+        isbn_num = request.form.get("isbn")
+        if title != '' and description != '' and isbn_num != '':  # checks if user fill up the form
+            sql_query = f"""INSERT INTO book(title, description, isbn_number) VALUES 
+                            ('{title}', '{description}', '{isbn_num}');"""  # query for insert data
+            insert_del_sql(sql_query, 'library')
+            return redirect("/books-list")
+        else:
+            return "Form not filled properly"
 
 
 if __name__ == "__main__":
