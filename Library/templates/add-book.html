@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+    <meta charset="UTF-8">
+    <title>Add book</title>
+</head>
+<body>
+    <form action="" method="post">
+        <label>Title:
+            <input type="text" name="title" />
+        </label><br>
+        <label>ISBN number:
+            <input type="text" maxlength="13" name="isbn" />
+        </label><br>
+        <label>Description:
+<!--            <input type="text" name="desc" style="height: 200px; width: 300px" />-->
+            <textarea name="desc"></textarea>
+        </label><br>
+
+    <button type="submit">Add book</button>
+    </form><br><br>
+    <a href="/books-list"><button>Back</button></a>
+</body>
+</html>

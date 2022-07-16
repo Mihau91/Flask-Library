@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+    <meta charset="UTF-8">
+    <title>List of books</title>
+</head>
+<body>
+    <h2>List of books:</h2>
+    <ul>
+        {% for book in books %} <!--print titles of books -->
+        <li><a href="/book-details/{{book[0]}}">{{book[1]}}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="/"><button>Back</button></a>
+    <a href="/add-book"><button>Add book</button></a>
+</body>
+</html>
