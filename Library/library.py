@@ -90,5 +90,17 @@ def add_book():
             return "Form not filled properly"
 
 
+@app.route('/book-details/<book_id>')
+def book_details_delete_edit(book_id):
+    """
+    renders page with details about book taken from database
+    """
+    if request.method == "GET":
+        sql_query = f"SELECT * FROM book WHERE id={book_id}"  # select book by id
+        book = select_sql(sql_query, 'library')
+        return render_template('book-details.html', book=book)
+    elif request.method == "POST":
+        pass
+
 if __name__ == "__main__":
     app.run(debug=True)
