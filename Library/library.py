@@ -117,6 +117,17 @@ def edit_book(book_id):
         sql_query = f"SELECT * FROM book WHERE id={book_id}"
         book = select_sql(sql_query, 'library')
         return render_template('edit-book.html', book=book)
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("desc")
+        isbn_num = request.form.get("isbn")
+        if title != '' and description != '' and isbn_num != '':  # checks if user fill up the form
+            sql_query = f"""UPDATE book SET title='{title}', description='{description}', isbn_number='{isbn_num}'
+                            WHERE id={book_id}"""  # query for update data
+            insert_del_sql(sql_query, 'library')
+            return redirect(f"/book-details/{book_id}")
+        else:
+            return "Form not filled properly"
 
 
 if __name__ == "__main__":
