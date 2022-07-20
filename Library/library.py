@@ -90,7 +90,7 @@ def add_book():
             return "Form not filled properly"
 
 
-@app.route('/book-details/<book_id>')
+@app.route('/book-details/<book_id>', methods=["GET", "POST"])
 def book_details_delete_edit(book_id):
     """
     renders page with details about book taken from database
@@ -100,7 +100,35 @@ def book_details_delete_edit(book_id):
         book = select_sql(sql_query, 'library')
         return render_template('book-details.html', book=book)
     elif request.method == "POST":
-        pass
+        sql = f"DELETE FROM book WHERE id={book_id}"
+        if request.form['action'] == "Delete":  # action for delete button
+            insert_del_sql(sql, 'library')
+            return redirect('/books-list')
+        elif request.form['action'] == "Edit":
+            return redirect(f'/edit-book/{book_id}')  # redirect to book with specific id
+
+
+@app.route("/edit-book/<book_id>", methods=["GET", "POST"])
+def edit_book(book_id):
+    """
+    Renders page for editing book's info.
+    """
+    if request.method == "GET":
+        sql_query = f"SELECT * FROM book WHERE id={book_id}"
+        book = select_sql(sql_query, 'library')
+        return render_template('edit-book.html', book=book)
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("desc")
+        isbn_num = request.form.get("isbn")
+        if title != '' and description != '' and isbn_num != '':  # checks if user fill up the form
+            sql_query = f"""UPDATE book SET title='{title}', description='{description}', isbn_number='{isbn_num}'
+                            WHERE id={book_id}"""  # query for update data
+            insert_del_sql(sql_query, 'library')
+            return redirect(f"/book-details/{book_id}")
+        else:
+            return "Form not filled properly"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
