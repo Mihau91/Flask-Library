@@ -1,8 +1,9 @@
 # Flask-Library
 basics of flask and sql
 ## "Simulation" of Library:
-   *list of book from taken from database
-   *detailed info about book (taken from database by id)
-   *option to add own book
-   *ption to delete book
-   *option to edit book details
+  * List of books taken from database.
+  * Links for detailed info about book (selected from database by id).
+  * Option to add own book (saved to database).
+  * option to delete book (from database).
+  * Option to edit book info.
+
